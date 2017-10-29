@@ -7,7 +7,8 @@ An implementation of IPasswordHasher<TUser> using [libsodium-core](https://githu
 ## Installation
 
 ```
-services.AddScoped<IPasswordHasher<ApplicationUser>, Argon2PasswordHasher<ApplicationUser>>();
+services.AddIdentity<TUser, TRole>();
+services.AddScoped<IPasswordHasher<TUser>, Argon2PasswordHasher<TUser>>();
 ```
 
 ### Options
