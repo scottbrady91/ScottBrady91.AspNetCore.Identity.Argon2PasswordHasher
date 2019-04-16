@@ -14,14 +14,14 @@ namespace ScottBrady91.AspNetCore.Identity
             options = optionsAccessor?.Value ?? new Argon2PasswordHasherOptions();
         }
 
-        public string HashPassword(TUser user, string password)
+        public virtual string HashPassword(TUser user, string password)
         {
             if (password == null) throw new ArgumentNullException(nameof(password));
             
             return PasswordHash.ArgonHashString(password, ParseStrength());
         }
 
-        public PasswordVerificationResult VerifyHashedPassword(TUser user, string hashedPassword, string providedPassword)
+        public virtual PasswordVerificationResult VerifyHashedPassword(TUser user, string hashedPassword, string providedPassword)
         {
             if (hashedPassword == null) throw new ArgumentNullException(nameof(hashedPassword));
             if (providedPassword == null) throw new ArgumentNullException(nameof(providedPassword));
