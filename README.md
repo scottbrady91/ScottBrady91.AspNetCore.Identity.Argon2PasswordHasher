@@ -6,7 +6,7 @@ An implementation of IPasswordHasher<TUser> using [libsodium-core](https://githu
 
 ## Installation
 
-```
+```cs
 services.AddIdentity<TUser, TRole>();
 services.AddScoped<IPasswordHasher<TUser>, Argon2PasswordHasher<TUser>>();
 ```
@@ -16,7 +16,7 @@ services.AddScoped<IPasswordHasher<TUser>, Argon2PasswordHasher<TUser>>();
  - **Strength**: Argon2HashStrength
 
 Register with:
-```
+```cs
 services.Configure<Argon2PasswordHasherOptions>(options => {
 	options.Strength = Argon2HashStrength.Interactive;
 });
