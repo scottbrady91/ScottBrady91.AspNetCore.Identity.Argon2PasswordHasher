@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Sodium;
 
-namespace ScottBrady91.AspNetCore.Identity
+namespace Argon2PasswordHasher
 {
     public class Argon2PasswordHasher<TUser> : IPasswordHasher<TUser> where TUser : class
     {
-        private readonly Argon2PasswordHasherOptions options;
+        private readonly Argon2PasswordHasherOptions _options;
 
         public Argon2PasswordHasher(IOptions<Argon2PasswordHasherOptions> optionsAccessor = null)
         {
-            options = optionsAccessor?.Value ?? new Argon2PasswordHasherOptions();
+            _options = optionsAccessor?.Value ?? new Argon2PasswordHasherOptions();
         }
 
         public virtual string HashPassword(TUser user, string password)
@@ -33,7 +33,7 @@ namespace ScottBrady91.AspNetCore.Identity
 
         private PasswordHash.StrengthArgon ParseStrength()
         {
-            switch (options.Strength)
+            switch (_options.Strength)
             {
                 case Argon2HashStrength.Interactive:
                     return PasswordHash.StrengthArgon.Interactive;

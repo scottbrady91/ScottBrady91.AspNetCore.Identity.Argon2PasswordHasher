@@ -1,6 +1,4 @@
-﻿using Sodium;
-
-namespace ScottBrady91.AspNetCore.Identity
+﻿namespace Argon2PasswordHasher
 {
     public class Argon2PasswordHasherOptions
     {

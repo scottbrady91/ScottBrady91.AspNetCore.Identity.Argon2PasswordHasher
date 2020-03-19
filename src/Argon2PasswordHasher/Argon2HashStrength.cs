@@ -1,4 +1,4 @@
-﻿namespace ScottBrady91.AspNetCore.Identity
+﻿namespace Argon2PasswordHasher
 {
     public enum Argon2HashStrength
     {

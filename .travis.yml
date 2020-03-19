@@ -1,0 +1,12 @@
+language: csharp
+solution: Argon2PasswordHasher.sln
+dotnet:
+  - 2.1.16
+  - 2.2.8
+  - 3.0.3
+  - 3.1.2
+install:
+  - dotnet restore
+script:
+  - dotnet build
+  - dotnet test

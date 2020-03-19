@@ -1,11 +1,11 @@
 ﻿using System;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Sodium;
 using Xunit;
-using Microsoft.Extensions.Options;
 
-namespace ScottBrady91.AspNetCore.Identity.Argon2PasswordHasher.Tests
+namespace Argon2PasswordHasher.Tests
 {
     public class Argon2PasswordHasherTests
     {
