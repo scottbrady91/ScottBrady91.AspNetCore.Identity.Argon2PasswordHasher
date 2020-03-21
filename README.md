@@ -1,7 +1,9 @@
 # Argon2 Password Hasher for ASP.NET Core Identity (ASP.NET Identity 3)
 
-[![NuGet](https://img.shields.io/nuget/v/ScottBrady91.AspNetCore.Identity.Argon2PasswordHasher.svg)](https://www.nuget.org/packages/ScottBrady91.AspNetCore.Identity.Argon2PasswordHasher/)
-[![Build Status](https://travis-ci.org/Atulin/Argon2PasswordHasher.svg?branch=master)](https://travis-ci.org/Atulin/Argon2PasswordHasher)
+![](https://github.com/Atulin/Argon2PasswordHasher/workflows/netcore-2.1/badge.svg)
+![](https://github.com/Atulin/Argon2PasswordHasher/workflows/netcore-2.2/badge.svg)
+![](https://github.com/Atulin/Argon2PasswordHasher/workflows/netcore-3.0/badge.svg)
+![](https://github.com/Atulin/Argon2PasswordHasher/workflows/netcore-3.1/badge.svg)
 
 An implementation of IPasswordHasher<TUser> using [libsodium-core](https://github.com/tabrath/libsodium-core).
 
