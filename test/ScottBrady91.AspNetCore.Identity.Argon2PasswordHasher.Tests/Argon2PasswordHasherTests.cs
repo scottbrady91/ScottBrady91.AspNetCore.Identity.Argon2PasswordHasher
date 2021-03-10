@@ -9,15 +9,43 @@ namespace ScottBrady91.AspNetCore.Identity.Argon2PasswordHasher.Tests
 {
     public class Argon2PasswordHasherTests
     {
+        private Argon2PasswordHasherOptions options = new Argon2PasswordHasherOptions();
+        
+        private Argon2PasswordHasher<string> CreateSut() =>
+            new Argon2PasswordHasher<string>(
+                options != null ? new OptionsWrapper<Argon2PasswordHasherOptions>(options) : null);
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public void HashPassword_WhenPasswordIsNullOrWhitespace_ExpectArgumentNullException(string password)
+        {
+            var sut = CreateSut();
+            Assert.Throws<ArgumentNullException>(() => sut.HashPassword(null, password));
+        }
+        
         [Fact]
         public void HashPassword_WithDefaultSettings_ExpectVerifiableHash()
         {
             var password = Guid.NewGuid().ToString();
 
-            var hasher = new Argon2PasswordHasher<string>();
-            var hashedPassword = hasher.HashPassword("", password);
+            var sut = CreateSut();
+            var hashedPassword = sut.HashPassword("", password);
 
             PasswordHash.ArgonHashStringVerify(hashedPassword, password).Should().BeTrue();
+        }
+
+        [Fact]
+        public void HashPassword_WhenCalledMultipleTimesWithSamePlaintext_ExpectDifferentHash()
+        {
+            var password = Guid.NewGuid().ToString();
+
+            var sut = CreateSut();
+            var hashedPassword1 = sut.HashPassword("", password);
+            var hashedPassword2 = sut.HashPassword("", password);
+
+            hashedPassword1.Should().NotBe(hashedPassword2);
         }
 
         [Fact]
@@ -25,12 +53,32 @@ namespace ScottBrady91.AspNetCore.Identity.Argon2PasswordHasher.Tests
         {
             var password = Guid.NewGuid().ToString();
 
-            var hasher = new Argon2PasswordHasher<string>(
-                new OptionsWrapper<Argon2PasswordHasherOptions>(
-                    new Argon2PasswordHasherOptions {Strength = Argon2HashStrength.Sensitive}));
-            var hashedPassword = hasher.HashPassword("", password);
+            options.Strength = Argon2HashStrength.Sensitive;
+            var sut = CreateSut();
+            
+            var hashedPassword = sut.HashPassword("", password);
 
             PasswordHash.ArgonHashStringVerify(hashedPassword, password).Should().BeTrue();
+        }
+        
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public void VerifyHashedPassword_WhenHashedPasswordIsNullOrWhitespace_ExpectArgumentNullException(string hashedPassword)
+        {
+            var sut = CreateSut();
+            Assert.Throws<ArgumentNullException>(() => sut.VerifyHashedPassword(null, hashedPassword, Guid.NewGuid().ToString()));
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public void VerifyHashedPassword_WhenPasswordIsNullOrWhitespace_ExpectArgumentNullException(string password)
+        {
+            var sut = CreateSut();
+            Assert.Throws<ArgumentNullException>(() => sut.VerifyHashedPassword(null, Guid.NewGuid().ToString(), password));
         }
 
         [Fact]
@@ -39,9 +87,9 @@ namespace ScottBrady91.AspNetCore.Identity.Argon2PasswordHasher.Tests
             var password = Guid.NewGuid().ToString();
             var hashedPassword = PasswordHash.ArgonHashString(password);
 
-            var hasher = new Argon2PasswordHasher<string>();
+            var sut = CreateSut();
 
-            hasher.VerifyHashedPassword("", hashedPassword, password).Should().Be(PasswordVerificationResult.Success);
+            sut.VerifyHashedPassword("", hashedPassword, password).Should().Be(PasswordVerificationResult.Success);
         }
 
         [Fact]
@@ -50,9 +98,10 @@ namespace ScottBrady91.AspNetCore.Identity.Argon2PasswordHasher.Tests
             var password = Guid.NewGuid().ToString();
             var hashedPassword = PasswordHash.ArgonHashString(password, PasswordHash.StrengthArgon.Sensitive);
 
-            var hasher = new Argon2PasswordHasher<string>();
+            options.Strength = Argon2HashStrength.Sensitive;
+            var sut = CreateSut();
 
-            hasher.VerifyHashedPassword("", hashedPassword, password).Should().Be(PasswordVerificationResult.Success);
+            sut.VerifyHashedPassword("", hashedPassword, password).Should().Be(PasswordVerificationResult.Success);
         }
 
         [Fact]
@@ -61,9 +110,21 @@ namespace ScottBrady91.AspNetCore.Identity.Argon2PasswordHasher.Tests
             var password = Guid.NewGuid().ToString();
             var hashedPassword = PasswordHash.ArgonHashString(Guid.NewGuid().ToString());
 
-            var hasher = new Argon2PasswordHasher<string>();
+            var sut = CreateSut();
 
-            hasher.VerifyHashedPassword("", hashedPassword, password).Should().Be(PasswordVerificationResult.Failed);
+            sut.VerifyHashedPassword("", hashedPassword, password).Should().Be(PasswordVerificationResult.Failed);
+        }
+
+        [Fact]
+        public void VerifyHashedPassword_WhenPasswordHashedWithLowerStrength_ExpectSuccessRehashNeeded()
+        {
+            var password = Guid.NewGuid().ToString();
+            var hashedPassword = PasswordHash.ArgonHashString(password, PasswordHash.StrengthArgon.Medium);
+
+            options.Strength = Argon2HashStrength.Sensitive;
+            var sut = CreateSut();
+
+            sut.VerifyHashedPassword("", hashedPassword, password).Should().Be(PasswordVerificationResult.SuccessRehashNeeded);
         }
     }
 }
