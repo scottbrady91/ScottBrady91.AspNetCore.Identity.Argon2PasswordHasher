@@ -33,7 +33,7 @@ namespace ScottBrady91.AspNetCore.Identity
         {
             if (string.IsNullOrWhiteSpace(password)) throw new ArgumentNullException(nameof(password));
             
-            return PasswordHash.ArgonHashString(password, ParseStrength());
+            return PasswordHash.ArgonHashString(password, ParseStrength()).TrimEnd("\0".ToCharArray());
         }
 
         /// <summary>
