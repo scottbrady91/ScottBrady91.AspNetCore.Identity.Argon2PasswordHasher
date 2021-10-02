@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Sodium;
@@ -68,7 +69,7 @@ namespace ScottBrady91.AspNetCore.Identity.Argon2PasswordHasher.Tests
 
             var hashedPassword = sut.HashPassword("", Guid.NewGuid().ToString());
 
-            hashedPassword.Should().NotEndWith("\0");
+            hashedPassword.Last().Should().NotBe('\0');
         }
         
         [Theory]
