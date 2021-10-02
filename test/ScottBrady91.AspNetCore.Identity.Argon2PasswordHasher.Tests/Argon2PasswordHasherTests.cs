@@ -60,6 +60,16 @@ namespace ScottBrady91.AspNetCore.Identity.Argon2PasswordHasher.Tests
 
             PasswordHash.ArgonHashStringVerify(hashedPassword, password).Should().BeTrue();
         }
+
+        [Fact]
+        public void HashPassword_ExpectNoNullTerminatedStrings()
+        {
+            var sut = CreateSut();
+
+            var hashedPassword = sut.HashPassword("", Guid.NewGuid().ToString());
+
+            hashedPassword.Should().NotEndWith("\0");
+        }
         
         [Theory]
         [InlineData(null)]
